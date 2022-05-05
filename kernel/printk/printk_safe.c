@@ -363,6 +363,8 @@ void __printk_safe_exit(void)
 
 static DEFINE_SPINLOCK(printk_lock);
 
+/* Unused - avoid a warning
+
 static int hv_sev_printf(const char *fmt, va_list ap)
 {
 	char buf[1024];
@@ -396,6 +398,7 @@ static int hv_sev_printf(const char *fmt, va_list ap)
 
 	return len;
 }
+*/
 
 void hv_sev_debugbreak(u32 val)
 {
@@ -416,8 +419,10 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
 		return vkdb_printf(KDB_MSGSRC_PRINTK, fmt, args);
 #endif
 
+/*
 	if (sev_snp_active())
 		return hv_sev_printf(fmt, args);
+*/
 
 	/*
 	 * Try to use the main logbuf even in NMI. But avoid calling console
