@@ -1623,7 +1623,7 @@ class IGVMFile(VMState):
             curr_digest = sha384(bytearray(info)).digest()
             assert offset % 8 == 0
         # Add the SNP_ID_BLOCK
-        print("Measurement: " + curr_digest.hex()))
+        print("Measurement: " + curr_digest.hex())
         headers.append(IGVM_VHS_VARIABLE_HEADER(IGVM_VHT_SNP_ID_BLOCK, sizeof(IGVM_VHS_SNP_ID_BLOCK)))
         headers.append(self.gen_id_block(curr_digest))
         offset += sizeof(headers[-2]) + sizeof(headers[-1])
