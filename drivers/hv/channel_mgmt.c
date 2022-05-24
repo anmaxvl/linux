@@ -344,8 +344,8 @@ static void free_channel(struct vmbus_channel *channel)
 	tasklet_kill(&channel->callback_event);
 	vmbus_remove_channel_attr_group(channel);
 
-	kobject_put(&channel->kobj);
 	hv_free_channel_ivm(channel);
+	kobject_put(&channel->kobj);
 }
 
 /*

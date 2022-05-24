@@ -311,8 +311,10 @@ static int netvsc_init_buf(struct hv_device *device,
 	ret = hv_bounce_resources_reserve(device->channel,
 			PAGE_SIZE * 4096);
 	if (ret) {
+		ret = -ENOMEM;
 		pr_warn("Fail to reserve bounce buffer.\n");
-		return -ENOMEM;
+		hv_bounce_resources_free(device->channel);
+		return ret;
 	}
 
 	/* Get receive buffer area. */
@@ -682,6 +684,7 @@ void netvsc_device_remove(struct hv_device *device)
 		/* See also vmbus_reset_channel_cb(). */
 		napi_disable(&net_device->chan_table[i].napi);
 		netif_napi_del(&net_device->chan_table[i].napi);
+		hv_bounce_resources_free(net_device->chan_table[i].channel);
 	}
 
 	/*

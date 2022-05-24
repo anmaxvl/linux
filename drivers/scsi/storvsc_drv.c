@@ -1329,6 +1329,7 @@ static int storvsc_connect_to_vsp(struct hv_device *device, u32 ring_size,
 static int storvsc_dev_remove(struct hv_device *device)
 {
 	struct storvsc_device *stor_device;
+	int i;
 
 	stor_device = hv_get_drvdata(device);
 
@@ -1357,6 +1358,8 @@ static int storvsc_dev_remove(struct hv_device *device)
 	/* Close the channel */
 	vmbus_close(device->channel);
 
+	for (i=0; i < stor_device->num_sc; i++)
+		hv_bounce_resources_free(stor_device->stor_chns[i]);
 	kfree(stor_device->stor_chns);
 	kfree(stor_device);
 	return 0;

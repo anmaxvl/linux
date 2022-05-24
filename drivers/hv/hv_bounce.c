@@ -414,6 +414,24 @@ static void hv_copy_to_from_bounce(const struct hv_bounce_pkt *bounce_pkt,
 	}
 }
 
+void hv_bounce_resources_free(struct vmbus_channel *channel)
+{
+	unsigned long flags;
+
+	if (!hv_is_isolation_supported())
+		return;
+
+	spin_lock_irqsave(&channel->bp_lock, flags);
+	hv_bounce_pkt_list_free(channel, &channel->bounce_pkt_free_list_head);
+	hv_bounce_page_list_free(channel, &channel->bounce_page_free_head);
+	channel->bounce_pkt_free_count = 0;
+	channel->bounce_page_alloc_count = 0;
+	channel->min_bounce_resource_count = 0;
+	spin_unlock_irqrestore(&channel->bp_lock, flags);
+}
+
+EXPORT_SYMBOL_GPL(hv_bounce_resources_free);
+
 /*
  * Assigns the bounce resources needed to handle the PFNs within the range and
  * updates the range accordingly. Uses resources from the pre-allocated pool if
