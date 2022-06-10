@@ -364,8 +364,11 @@ int hv_bounce_resources_reserve(struct vmbus_channel *channel,
 		return 0;
 
 	/* Resize operation is currently not supported */
-	if (unlikely((!min_bounce_bytes || channel->min_bounce_resource_count)))
-		return -EINVAL;
+
+	// Removed to fix teh L2_Bridge config of containerplat where it would not start
+        // due to this check being hit when the MTU was changed
+	//if (unlikely((!min_bounce_bytes || channel->min_bounce_resource_count)))
+        //		return -EINVAL;
 
 	/*
 	 * Get the page count and round it up to the min bounce pages supported
